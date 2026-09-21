@@ -1,0 +1,159 @@
+// Version: 4.0.0
+type AccessControlState__201339279 =
+  {
+    var adminAssigned : Bool;
+    userRoles : Map__230067015<Principal, UserRole__91647283>
+  };
+type CustomerInfo__73765930 =
+  {email : Text; fullName : Text; whatsapp : Text};
+type CustomerInfo__740534964 =
+  {email : Text; fullName : Text; whatsapp : Text};
+type Data__44217153<K, V> = {var count : Nat__227979830; kvs : [var ?(K, V)]};
+type EventId__1057314870 = Text;
+type EventId__361868567 = Text;
+type Internal__283199666<K, V> =
+  {children : [var ?Node__204828119<K, V>]; data : Data__44217153<K, V>};
+type Leaf__598469445<K, V> = {data : Data__44217153<K, V>};
+type Map__230067015<K, V> = Map__405889023<K, V>;
+type Map__405889023<K, V> = Map__603270868<K, V>;
+type Map__603270868<K, V> =
+  {var root : Node__204828119<K, V>; var size : Nat__227979830};
+type Nat__227979830 = Nat__920180692;
+type Nat__920180692 = Nat;
+type NewActor__426998186 =
+  {
+    accessControlState : AccessControlState__201339279;
+    inventory : Map__230067015<TierId__748839304, Nat>;
+    orders : Map__230067015<OrderNumber__390695140, Order__197105907>;
+    state : {var nextOrderSeq : Nat; var nextTicketSeq : Nat};
+    tickets : Map__230067015<TicketId__428497193, TicketRecord__673222454>;
+    tokens : Map__230067015<SecureToken__758288082, TicketId__428497193>
+  };
+type Node__204828119<K, V> =
+  {#internal : Internal__283199666<K, V>; #leaf : Leaf__598469445<K, V>};
+type OrderLine__705645396 =
+  {
+    lineTotal : Rupiah__490350571;
+    quantity : Nat;
+    tierId : TierId__134771402;
+    tierName : Text;
+    unitPrice : Rupiah__490350571
+  };
+type OrderLine__878294509 =
+  {
+    lineTotal : Rupiah__899066205;
+    quantity : Nat;
+    tierId : TierId__748839304;
+    tierName : Text;
+    unitPrice : Rupiah__899066205
+  };
+type OrderNumber__390695140 = Text;
+type OrderNumber__562551665 = Text;
+type OrderStatus__393009242 = {#cancelled; #expired; #paid; #pending};
+type OrderStatus__643407394 = {#cancelled; #expired; #paid; #pending};
+type Order__141779993 =
+  {
+    createdAt : Timestamp__301639476;
+    customer : CustomerInfo__740534964;
+    lines : [OrderLine__705645396];
+    orderNumber : OrderNumber__562551665;
+    paymentDeadline : Timestamp__301639476;
+    serviceFee : Rupiah__490350571;
+    status : OrderStatus__393009242;
+    subtotal : Rupiah__490350571;
+    tickets : [Ticket__137428973];
+    total : Rupiah__490350571
+  };
+type Order__197105907 =
+  {
+    createdAt : Timestamp__836802844;
+    customer : CustomerInfo__73765930;
+    lines : [OrderLine__878294509];
+    orderNumber : OrderNumber__390695140;
+    paymentDeadline : Timestamp__836802844;
+    serviceFee : Rupiah__899066205;
+    status : OrderStatus__643407394;
+    subtotal : Rupiah__899066205;
+    tickets : [Ticket__328897384];
+    total : Rupiah__899066205
+  };
+type Rupiah__490350571 = Nat;
+type Rupiah__899066205 = Nat;
+type SecureToken__190115484 = Text;
+type SecureToken__758288082 = Text;
+type TicketId__224230191 = Text;
+type TicketId__428497193 = Text;
+type TicketRecord__572528499 =
+  {
+    eventId : EventId__361868567;
+    orderId : OrderNumber__562551665;
+    secureToken : SecureToken__190115484;
+    status : TicketStatus__648101983;
+    ticketId : TicketId__224230191;
+    ticketType : TierId__134771402
+  };
+type TicketRecord__673222454 =
+  {
+    eventId : EventId__1057314870;
+    orderId : OrderNumber__390695140;
+    secureToken : SecureToken__758288082;
+    status : TicketStatus__744105662;
+    ticketId : TicketId__428497193;
+    ticketType : TierId__748839304
+  };
+type TicketStatus__648101983 = {#cancelled; #refunded; #used; #valid};
+type TicketStatus__744105662 = {#cancelled; #refunded; #used; #valid};
+type Ticket__137428973 =
+  {
+    eventId : EventId__361868567;
+    orderId : OrderNumber__562551665;
+    secureToken : SecureToken__190115484;
+    status : TicketStatus__648101983;
+    ticketId : TicketId__224230191;
+    ticketType : TierId__134771402
+  };
+type Ticket__328897384 =
+  {
+    eventId : EventId__1057314870;
+    orderId : OrderNumber__390695140;
+    secureToken : SecureToken__758288082;
+    status : TicketStatus__744105662;
+    ticketId : TicketId__428497193;
+    ticketType : TierId__748839304
+  };
+type TierId__134771402 = Text;
+type TierId__748839304 = Text;
+type Timestamp__301639476 = Int;
+type Timestamp__836802844 = Int;
+type UserRole__91647283 = {#admin; #guest; #user};
+{
+  "20260921_000000" : (_old : {}) -> NewActor__426998186
+}
+actor  {
+  stable accessControlState :
+    {
+      var adminAssigned : Bool;
+      userRoles : Map__230067015<Principal, UserRole__91647283>
+    };
+  stable inventory :
+    {
+      var root : Node__204828119<TierId__134771402, Nat>;
+      var size : Nat__227979830
+    };
+  stable orders :
+    {
+      var root : Node__204828119<OrderNumber__562551665, Order__141779993>;
+      var size : Nat__227979830
+    };
+  stable state : {var nextOrderSeq : Nat; var nextTicketSeq : Nat};
+  stable tickets :
+    {
+      var root : Node__204828119<TicketId__224230191, TicketRecord__572528499>;
+      var size : Nat__227979830
+    };
+  stable tokens :
+    {
+      var root : Node__204828119<SecureToken__190115484, TicketId__224230191>;
+      var size : Nat__227979830
+    }
+};

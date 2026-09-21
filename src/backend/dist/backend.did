@@ -1,0 +1,209 @@
+type Value = 
+ variant {
+   "bool": bool;
+   float: float64;
+   "int": int;
+   "nat": nat;
+   "null";
+   "text": text;
+ };
+type UserRole = 
+ variant {
+   admin;
+   guest;
+   user;
+ };
+type Timestamp = int;
+type TierId = text;
+type TicketTier = 
+ record {
+   capacity: nat;
+   description: text;
+   id: TierId;
+   name: text;
+   price: Rupiah;
+   remaining: nat;
+   soldOut: bool;
+ };
+type TicketStatus = 
+ variant {
+   cancelled;
+   refunded;
+   used;
+   valid;
+ };
+type TicketId = text;
+type Ticket = 
+ record {
+   eventId: EventId;
+   orderId: OrderNumber;
+   secureToken: SecureToken;
+   status: TicketStatus;
+   ticketId: TicketId;
+   ticketType: TierId;
+ };
+type SecureToken = text;
+type ScanResult = 
+ variant {
+   alreadyUsed: record {
+                  ticketId: TicketId;
+                  ticketType: TierId;
+                };
+   invalidTicket;
+   validTicket: record {
+                  ticketId: TicketId;
+                  ticketType: TierId;
+                };
+ };
+type Rupiah = nat;
+type Result__1 = 
+ variant {
+   err: Error;
+   ok;
+ };
+type Result = 
+ record {
+   hasMore: bool;
+   rows: vec vec Cell;
+ };
+type OrderStatus = 
+ variant {
+   cancelled;
+   expired;
+   paid;
+   pending;
+ };
+type OrderNumber = text;
+type OrderLine = 
+ record {
+   lineTotal: Rupiah;
+   quantity: nat;
+   tierId: TierId;
+   tierName: text;
+   unitPrice: Rupiah;
+ };
+type Order = 
+ record {
+   createdAt: Timestamp;
+   customer: CustomerInfo;
+   lines: vec OrderLine;
+   orderNumber: OrderNumber;
+   paymentDeadline: Timestamp;
+   serviceFee: Rupiah;
+   status: OrderStatus;
+   subtotal: Rupiah;
+   tickets: vec Ticket;
+   total: Rupiah;
+ };
+type EventInfo = 
+ record {
+   city: text;
+   date: text;
+   id: EventId;
+   name: text;
+   startsAt: Timestamp;
+   tagline: text;
+   time: text;
+   timezone: text;
+   venue: text;
+ };
+type EventId = text;
+type Error = 
+ variant {
+   AmbiguousAttribute: record {
+                         field: text;
+                         sources: vec text;
+                       };
+   FrontendOriginMismatch: record {
+                             expected: vec text;
+                             got: text;
+                           };
+   FrontendOriginsNotConfigured;
+   MalformedCandid;
+   MissingField: text;
+   MixedSsoSources: record {
+                      otherKeys: vec text;
+                      ssoKeys: vec text;
+                    };
+   NoAttributes;
+   Stale: record {ageNs: nat;};
+   UnknownNonce;
+   UntrustedSsoSource: record {domain: text;};
+ };
+type CustomerInfo = 
+ record {
+   email: text;
+   fullName: text;
+   whatsapp: text;
+ };
+type CreateOrderResult = 
+ record {
+   orderNumber: OrderNumber;
+   paymentDeadline: Timestamp;
+   serviceFee: Rupiah;
+   subtotal: Rupiah;
+   total: Rupiah;
+ };
+type CreateOrderError = 
+ variant {
+   insufficientStock: record {
+                        remaining: nat;
+                        requested: nat;
+                        tierId: TierId;
+                      };
+   invalidInput: text;
+   unknownTier: TierId;
+ };
+type ConfirmPaymentResult = 
+ record {
+   orderNumber: OrderNumber;
+   status: OrderStatus;
+   tickets: vec Ticket;
+ };
+type ConfirmPaymentError = 
+ variant {
+   alreadyPaid: OrderNumber;
+   orderExpired: OrderNumber;
+   unknownOrder: OrderNumber;
+ };
+type Cell = 
+ record {
+   name: text;
+   value: Value;
+ };
+service : {
+  _initialize_access_control: () -> ();
+  _internet_identity_sign_in_finish: () -> (Result__1);
+  _internet_identity_sign_in_start: () -> (blob);
+  assignCallerUserRole: (user: principal, role: UserRole) -> ();
+  /// Demo payment confirmation — marks the order paid and issues tickets.
+  /// Documented as a demo path; the single Midtrans integration point.
+  confirmDemoPayment: (orderNumber: OrderNumber) ->
+   (variant {
+      err: ConfirmPaymentError;
+      ok: ConfirmPaymentResult;
+    });
+  /// Create an order from the three checkout fields plus tier and quantity.
+  createOrder: (fullName: text, email: text, whatsapp: text, tierId: 
+   TierId, quantity: nat) ->
+   (variant {
+      err: CreateOrderError;
+      ok: CreateOrderResult;
+    });
+  execute: (qJson: text) -> (Result) query;
+  /// Static Markdown description of this backend's public API.
+  getApiDoc: () -> (text) query;
+  getCallerUserRole: () -> (UserRole) query;
+  /// The single hard-coded event.
+  getEvent: () -> (EventInfo) query;
+  /// Fetch an order by its order number.
+  getOrder: (orderNumber: OrderNumber) -> (opt Order) query;
+  isCallerAdmin: () -> (bool) query;
+  /// All ticket tiers with live remaining stock, read from the actor's
+  /// inventory map. `soldOut` is true only when remaining is actually zero.
+  listTiers: () -> (vec TicketTier) query;
+  schema: () -> (text) query;
+  /// Venue scan validation: resolves a scanned secure token to VALID TICKET,
+  /// ALREADY USED, or INVALID TICKET, marking the ticket used on first success.
+  validateTicket: (token: SecureToken) -> (ScanResult);
+}

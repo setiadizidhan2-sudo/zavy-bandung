@@ -1,0 +1,23 @@
+{
+  "overview": "A premium single-event concert ticket website for ZAVY — LIVE IN BANDUNG, taking visitors from a cinematic hero through ticket selection, checkout, payment, and a luxury digital e-ticket.",
+  "features": [
+    "Cinematic full-screen hero with a live countdown to the show",
+    "Event information, venue location card, and artist lineup",
+    "Three ticket tiers with real remaining stock and quantity selectors",
+    "Sticky buy-ticket bar that follows you while browsing",
+    "Simple checkout with order summary and service fee",
+    "Payment method selection with order number and deadline",
+    "Animated payment success screen",
+    "Luxury e-ticket with a scannable QR code and download",
+    "Expandable terms and conditions"
+  ],
+  "category": "event-ticketing",
+  "tags": [
+    "concert",
+    "tickets",
+    "music",
+    "event",
+    "e-ticket"
+  ],
+  "last_updated": "2026-09-21T08:31:27.736Z"
+}
